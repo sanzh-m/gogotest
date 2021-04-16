@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Spring SSE Push Notifications</title>
+    <script>
+        function initialize() {
+            if (localStorage.getItem('clientId') == null) {
+                function reqListener () {
+                    localStorage.setItem('clientId', JSON.parse(this.responseText));
+                }
+
+                const clientIdReq = new XMLHttpRequest();
+                clientIdReq.addEventListener("load", reqListener);
+                clientIdReq.open("GET", "http://localhost:8080/get-client-id");
+                clientIdReq.send();
+            }
+        }
+        window.onload = initialize;
+    </script>
+</head>
+<body>
+<button id="button">Participate in lottery</button>
+<div id="winnerOrNot"></div>
+<script>
+    document.getElementById("button").addEventListener('click', () => {
+        function reqListener () {
+            localStorage.setItem('currentTicket', this.responseText);
+            console.log(this.responseText);
+        }
+
+        const getTicket = new XMLHttpRequest();
+        getTicket.addEventListener("load", reqListener);
+        getTicket.open("POST", "http://localhost:8080/add-ticket", true);
+        getTicket.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        getTicket.send(JSON.stringify({ "id": localStorage.getItem('clientId') }));
+        const eventSource = new EventSource('http://localhost:8080/subscribeToResults');
+        eventSource.onmessage = e => {
+            alert(JSON.parse(e.data) === JSON.parse(localStorage.getItem('currentTicket')).id);
+            document.getElementById("winnerOrNot").innerHTML = JSON.parse(e.data) === JSON.parse(localStorage.getItem('currentTicket')).id ? 'Winner' : 'Better luck next time :(';
+            eventSource.close();
+        };
+        eventSource.onopen = e => console.log('open');
+        eventSource.onerror = e => {
+            if (e.readyState === EventSource.CLOSED) {
+                console.log('close');
+            }
+            else {
+                console.log(e);
+            }
+        };
+        eventSource.addEventListener('second', function(e) {
+            console.log('second', e.data);
+        }, false);
+    });
+</script>
+</body>
+</html>

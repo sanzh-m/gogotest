@@ -1,0 +1,3 @@
+docker run --name gogo-postgres -p 5432:5432 -e POSTGRES_PASSWORD=gogovan -d postgres
+
+https://stackoverflow.com/questions/14630539/scheduling-a-job-with-spring-programmatically-with-fixedrate-set-dynamically/14632758#14632758 - for further improvement
