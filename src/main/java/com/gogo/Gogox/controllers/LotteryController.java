@@ -49,7 +49,7 @@ public class LotteryController {
                 "\n" +
                 "                const clientIdReq = new XMLHttpRequest();\n" +
                 "                clientIdReq.addEventListener(\"load\", reqListener);\n" +
-                "                clientIdReq.open(\"GET\", \"http://localhost:8080/get-client-id\");\n" +
+                "                clientIdReq.open(\"GET\", \"/get-client-id\");\n" +
                 "                clientIdReq.send();\n" +
                 "            }\n" +
                 "        }\n" +
@@ -68,10 +68,10 @@ public class LotteryController {
                 "\n" +
                 "        const getTicket = new XMLHttpRequest();\n" +
                 "        getTicket.addEventListener(\"load\", reqListener);\n" +
-                "        getTicket.open(\"POST\", \"http://localhost:8080/add-ticket\", true);\n" +
+                "        getTicket.open(\"POST\", \"/add-ticket\", true);\n" +
                 "        getTicket.setRequestHeader(\"Content-Type\", \"application/json;charset=UTF-8\");\n" +
                 "        getTicket.send(JSON.stringify({ \"id\": localStorage.getItem('clientId') }));\n" +
-                "        const eventSource = new EventSource('http://localhost:8080/subscribeToResults');\n" +
+                "        const eventSource = new EventSource('/subscribeToResults');\n" +
                 "        eventSource.onmessage = e => {\n" +
                 "            alert(JSON.parse(e.data) === JSON.parse(localStorage.getItem('currentTicket')).id);\n" +
                 "            document.getElementById(\"winnerOrNot\").innerHTML = JSON.parse(e.data) === JSON.parse(localStorage.getItem('currentTicket')).id ? 'Winner' : 'Better luck next time :(';\n" +
